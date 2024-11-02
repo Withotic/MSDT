@@ -10,7 +10,7 @@ bld = None  #buildlinedot
 isdebug = False
 
 
-#-----------------------------------------------------------------------------------------------------EVENTSHANDLE(done)
+#------------------------------------------------------------EVENTSHANDLE(done)
 def eventshandle():
     global playerpos, bld, lines, isdebug
     keys = pg.key.get_pressed()
@@ -21,9 +21,11 @@ def eventshandle():
     if keys[pg.K_LEFT]:dx -= 1
     if keys[pg.K_RIGHT]:dx += 1
     if dx!=0 and dy!=0:
-        playerpos = (playerpos[0] + playerspeed*dx/(2**0.5), playerpos[1] + playerspeed*dy/(2**0.5))
+        playerpos = (playerpos[0] + playerspeed*dx/(2**0.5),
+                     playerpos[1] + playerspeed*dy/(2**0.5))
     else:
-        playerpos = (playerpos[0] + playerspeed*dx, playerpos[1] + playerspeed*dy)
+        playerpos = (playerpos[0] + playerspeed*dx,
+                     playerpos[1] + playerspeed*dy)
     for i in pg.event.get():
         if i.type == pg.QUIT:exit()
         elif i.type == pg.KEYDOWN:
@@ -32,17 +34,18 @@ def eventshandle():
                     bld = playerpos
                 elif bld:
                     lines.append((bld, playerpos))
-                    if not isdebug: playerpos = (playerpos[0] + playerrad, playerpos[1] + playerrad)
+                    if not isdebug: playerpos = (playerpos[0] + playerrad,
+                                                 playerpos[1] + playerrad)
                     bld = None
             if i.key == pg.K_r:
                 bld = None
             if i.key == pg.K_k:
                 lines = []
-            if i.key == pg.K_c:isdebug=not isdebug
+            if i.key == pg.K_c:isdebug = not isdebug
             if i.key == pg.K_q:exit()
 
 
-#--------------------------------------------------------------------------------------------------COLLISION(almostdone)
+#---------------------------------------------------------COLLISION(almostdone)
 def linelen(line):
     return ( (line[0][0]-line[1][0])**2 + (line[0][1]-line[1][1])**2 ) ** 0.5
 
@@ -50,9 +53,13 @@ def linelen(line):
 def setlinelen(line, len, multiply):
     if linelen(line) > 0:
         if multiply:
-            return (line[0], (line[0][0] + (line[1][0]-line[0][0])*len, line[0][1] + (line[1][1]-line[0][1])*len))
+            return (line[0],
+                    (line[0][0] + (line[1][0]-line[0][0]) * len,
+                     line[0][1] + (line[1][1]-line[0][1]) * len))
         else:
-            return (line[0], (line[0][0] + (line[1][0]-line[0][0])*len / linelen(line), line[0][1] + (line[1][1] - line[0][1]) * len / linelen(line)))
+            return (line[0],
+                   (line[0][0] + (line[1][0]-line[0][0]) * len / linelen(line),
+                    line[0][1] + (line[1][1]-line[0][1]) * len / linelen(line)))
     else:
         return line
 
@@ -67,9 +74,12 @@ def dagtoline(line):
     am = (abs(a**2 - h**2)) ** 0.5
     bm = (abs(b**2 - h**2)) ** 0.5
     if am<=c and bm<=c:
-        return ((playerpos[0] + h * (line[1][1]-line[0][1]) / c, playerpos[1] + h * (line[0][0]-line[1][0]) / c), playerpos)
+        return ((playerpos[0] + h * (line[1][1]-line[0][1]) / c,
+                 playerpos[1] + h * (line[0][0]-line[1][0]) / c),
+                 playerpos)
     else:
-        if linelen((line[0], playerpos)) == min(linelen((line[0], playerpos)), linelen((line[1], playerpos))):
+        if linelen((line[0], playerpos)) == min(linelen((line[0], playerpos)),
+                                                linelen((line[1], playerpos))):
             return (line[0], playerpos)
         else:
             return (line[1], playerpos)
@@ -87,13 +97,29 @@ def collision():
         dagline = dagtoline(line)
         if(linelen(dagline) < playerrad):
             playerpos = setlinelen(dagline, playerrad, False)[1]
-#------------------------------------------------------------------------------------------------------RENDER(linesplit)
+#-------------------------------------------------------------RENDER(linesplit)
 
 
 def drawwall(line):
     pg.draw.line(screen, (255, 255, 255), line[0], line[1])
-    pg.draw.line(screen, (255, 0, 0), line[0], setlinelen((line[0], (line[0][0] + (line[1][1]-line[0][1]), line[0][1] + (line[0][0]-line[1][0]))), 10, False)[1])
-    pg.draw.line(screen, (255, 0, 0), line[1], setlinelen((line[1], (line[1][0] + (line[1][1]-line[0][1]), line[1][1] + (line[0][0]-line[1][0]))), 10, False)[1])
+    pg.draw.line(screen, (255, 0, 0), line[0],
+                 setlinelen((
+                                line[0],
+                                (
+                                    line[0][0] + (line[1][1]-line[0][1]),
+                                    line[0][1] + (line[0][0]-line[1][0])
+                                )
+                            ),
+                            10, False)[1])
+    pg.draw.line(screen, (255, 0, 0), line[1],
+                 setlinelen((
+                                line[1],
+                                (
+                                    line[1][0] + (line[1][1]-line[0][1]),
+                                    line[1][1] + (line[0][0]-line[1][0])
+                                )
+                            ),
+                            10, False)[1])
 
 
 def sign(n):
@@ -111,11 +137,17 @@ def dotintriag(a, b, c, D):
 
 def dotonline(d, l):
     if l[0][0] == l[1][0]:
-        return ((l[0][1]<=d[1] and d[1]<=l[1][1]) or (l[0][1]>=d[1] and d[1]>=l[1][1])) and (linelen((l[0], d))+linelen((l[1], d)) < linelen(l)*1.001)
+        return (  (l[0][1]<=d[1] and d[1]<=l[1][1])
+               or (l[0][1]>=d[1] and d[1]>=l[1][1]))\
+               and (linelen((l[0], d))+linelen((l[1], d)) < linelen(l)*1.001)
     if l[0][1] == l[1][1]:
-        return ((l[0][0]<=d[0] and d[0]<=l[1][0]) or (l[0][0]>=d[0] and d[0]>=l[1][0])) and (linelen((l[0], d))+linelen((l[1], d)) < linelen(l)*1.001)
-    return ((l[0][0]<=d[0] and d[0]<=l[1][0]) or (l[0][0]>=d[0] and d[0]>=l[1][0])) and\
-           ((l[0][1]<=d[1] and d[1]<=l[1][1]) or (l[0][1]>=d[1] and d[1]>=l[1][1]))
+        return ((l[0][0]<=d[0] and d[0]<=l[1][0])
+             or (l[0][0]>=d[0] and d[0]>=l[1][0]))\
+             and (linelen((l[0], d))+linelen((l[1], d)) < linelen(l)*1.001)
+    return (    (l[0][0]<=d[0] and d[0]<=l[1][0])
+             or (l[0][0]>=d[0] and d[0]>=l[1][0]))\
+           and ((l[0][1]<=d[1] and d[1]<=l[1][1])
+             or (l[0][1]>=d[1] and d[1]>=l[1][1]))
 
 
 def linecross(l1, l2):
@@ -150,16 +182,22 @@ def doubsplit(l, d1, d2):
 
 def partblock(dl, bl):
     global playerpos
-    if (dotintriag(playerpos, dl[0], dl[1], bl[0]) and dotintriag(playerpos, dl[0], dl[1], bl[1])):
+    if (    dotintriag(playerpos, dl[0], dl[1], bl[0])
+        and dotintriag(playerpos, dl[0], dl[1], bl[1])):
         print('hi')
-        return doubsplit(dl, linecross(dl, (playerpos, bl[0]))[0], linecross(dl, (playerpos, bl[1]))[0])
-    if (linecross((playerpos, dl[0]), bl) and linecross((playerpos, dl[0]), bl)[1] and linecross((playerpos, dl[0]), bl)[2]):
+        return doubsplit(dl, linecross(dl, (playerpos, bl[0]))[0],
+                             linecross(dl, (playerpos, bl[1]))[0])
+    if (    linecross((playerpos, dl[0]), bl)
+        and linecross((playerpos, dl[0]), bl)[1]
+        and linecross((playerpos, dl[0]), bl)[2]):
         print('hi1')
         if dotintriag(playerpos, dl[0], dl[1], bl[0]):
             return [(linecross((playerpos, bl[0]), dl)[0], dl[1])]
         else:
             return [(linecross((playerpos, bl[1]), dl)[0], dl[1])]
-    if (linecross((playerpos, dl[1]), bl) and linecross((playerpos, dl[1]), bl)[1] and linecross((playerpos, dl[1]), bl)[2]):
+    if (    linecross((playerpos, dl[1]), bl)
+        and linecross((playerpos, dl[1]), bl)[1]
+        and linecross((playerpos, dl[1]), bl)[2]):
         print('hi2')
         if dotintriag(playerpos, dl[0], dl[1], bl[0]):
             return [(linecross((playerpos, bl[0]), dl)[0], dl[0])]
@@ -173,7 +211,11 @@ def fullvis(dl, bl):
     n1 = linecross((playerpos, dl[0]), bl)
     n2 = linecross((playerpos, dl[1]), bl)
     n3 = linecross(dl, bl)
-    return (not(n3) or (not(n3[1]) and not(n3[2]))) and (not(n2) or (not(n2[1]) and not(n2[2]))) and (not(n1) or (not(n1[1]) and not(n1[2]))) and not(dotintriag(playerpos, dl[0], dl[1], bl[0])) and not(dotintriag(playerpos, dl[0], dl[1], bl[1]))
+    return    (not(n3) or (not(n3[1]) and not(n3[2])))\
+          and (not(n2) or (not(n2[1]) and not(n2[2])))\
+          and (not(n1) or (not(n1[1]) and not(n1[2])))\
+          and not(dotintriag(playerpos, dl[0], dl[1], bl[0]))\
+          and not(dotintriag(playerpos, dl[0], dl[1], bl[1]))
 
 
 def splitisline():#должен вернуть массив из разрезанной стены
@@ -209,7 +251,7 @@ def render():
             pg.draw.line(screen, (255, 255, 255), line[0], line[1])
 
 
-#-------------------------------------------------------------------------------------------------------------MAIN(done)
+#--------------------------------------------------------------------MAIN(done)
 clock = pg.time.Clock()
 pg.init()
 while True:

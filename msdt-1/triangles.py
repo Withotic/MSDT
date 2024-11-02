@@ -11,7 +11,9 @@ mousepos = (0, 0)
 def dotsgen():
     for y in range(13):
         for x in range(25):
-            dots.append((int( x * side * (3**0.5) / 2 ), y*side + (x%2==0)*side//2 ))
+            dots.append(
+                (int( x * side * (3**0.5) / 2 ),
+                 y*side + (x%2==0)*side//2 ))
 
 
 def dotsdraw():

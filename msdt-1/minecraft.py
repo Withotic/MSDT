@@ -21,31 +21,46 @@ def getblock(x, y, z):
 
 def addframe(g, ems):
     global t
-    func = open('C:/Users/nikipa/AppData/Roaming/.tlauncher/legacy/Minecraft/game/saves/qs (1)/datapacks/build/data/minecraft/functions/pf' + str(t) + '.mcfunction', "w")
+    func = open('C:/Users/nikipa/AppData/Roaming/.tlauncher/legacy/Minecraft\
+                /game/saves/qs (1)/datapacks/build/data/minecraft/functions/pf'
+                + str(t) + '.mcfunction', "w")
     for q in g:
-        func.write('setblock ' + str(q[0]) + ' ' + str(q[1]) + ' ' + str(q[2]) + ' netherrack' + '\n')
+        func.write('setblock ' + str(q[0]) + ' ' + str(q[1]) + ' ' + str(q[2])
+                   + ' netherrack' + '\n')
     for q in ems:
-        func.write('setblock ' + str(q[0]) + ' ' + str(q[1]) + ' ' + str(q[2]) + ' emerald_block' + '\n')
+        func.write('setblock ' + str(q[0]) + ' ' + str(q[1]) + ' ' + str(q[2])
+                   + ' emerald_block' + '\n')
     func.write('schedule function pf' + str(t+1) + ' 0.2s')
     t += 1
 
 
 def bigfunc(x, y, c):
     if c != 2:
-        return 0.5  <=  math.e ** (-0.06 * ((x-x1)**2 + (y-y1)**2))  +  math.e ** (-0.06 * ((x-x2)**2 + (y-y2)**2))  +  math.e ** (-0.06 * ((x-x3)**2 + (y-y3)**2))
+        return 0.5  <=  math.e ** (-0.06 * ((x-x1)**2 + (y-y1)**2)) \
+                     +  math.e ** (-0.06 * ((x-x2)**2 + (y-y2)**2)) \
+                     +  math.e ** (-0.06 * ((x-x3)**2 + (y-y3)**2))
     else:
-        return 0.5  <=  math.e ** (-0.06 * ((x-x1)**2 + (y-y1)**2))  +  math.e ** (-0.06 * ((x-x2)**2 + (y-y2)**2))  +  math.e ** (-0.06 * ((x-x3)**2 + (y-y3)**2))  +  math.e ** (y-24)
+        return 0.5  <=  math.e ** (-0.06 * ((x-x1)**2 + (y-y1)**2)) \
+                     +  math.e ** (-0.06 * ((x-x2)**2 + (y-y2)**2)) \
+                     +  math.e ** (-0.06 * ((x-x3)**2 + (y-y3)**2)) \
+                     +  math.e ** (y-24)
 
 
 def addframe(c):
     global t
     print(t, x1, y1, x2, y2, x3, y3)
-    func = open('C:/Users/nikipa/AppData/Roaming/.tlauncher/legacy/Minecraft/game/saves/qs (1)/datapacks/build/data/minecraft/functions/pf' + str(t) + '.mcfunction', "w")
-    func.write('fill 0 0 0 63 63 0 ' + ('white' if c!=2 else 'purple') + '_concrete\n')
+    func = open('C:/Users/nikipa/AppData/Roaming/.tlauncher/legacy/Minecraft\
+                /game/saves/qs (1)/datapacks/build/data/minecraft/functions/pf'
+                + str(t) + '.mcfunction', "w")
+    func.write('fill 0 0 0 63 63 0 '
+               + ('white' if c!=2 else 'purple')
+               + '_concrete\n')
     for x in range(64):
         for y in range(64):
             if(bigfunc( (x+0.5)/2, (y+0.5)/2, c )):
-                func.write('setblock ' + str(x) + ' ' + str(y) + ' 0 ' + ('blue'if c==0 else 'lime' if c==1 else 'white') + '_concrete\n')
+                func.write('setblock ' + str(x) + ' ' + str(y) + ' 0 '
+                           + ('blue'if c==0 else 'lime' if c==1 else 'white')
+                           + '_concrete\n')
     func.write('schedule function pf' + str(t+1) + ' 1')
 
 
@@ -85,8 +100,11 @@ def grow():
         sorces=q
 
 
-region = anvil.Region.from_file('C:/Users/nikipa/AppData/Roaming/.tlauncher/legacy/Minecraft/game/saves/qs (1)/region/r.0.0.mca')
-path = 'C:/Users/nikipa/AppData/Roaming/.tlauncher/legacy/Minecraft/game/saves/qs (1)/datapacks/build/data/minecraft/functions/'
+region = anvil.Region.from_file('C:/Users/nikipa/AppData/Roaming/.tlauncher\
+                                /legacy/Minecraft/game/saves/qs (1)/region\
+                                /r.0.0.mca')
+path = 'C:/Users/nikipa/AppData/Roaming/.tlauncher/legacy/Minecraft/game/saves\
+        /qs (1)/datapacks/build/data/minecraft/functions/'
 shutil.rmtree(path)
 os.makedirs(path)
 c = 0

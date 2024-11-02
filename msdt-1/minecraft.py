@@ -12,9 +12,9 @@ y2=16
 x3=16
 y3=16
 def getblock(x,y,z):
-  chunk = anvil.Chunk.from_region(region, x//16, z//16)
-  block = chunk.get_block(x%16, y, z%16)
-  return block.id
+    chunk = anvil.Chunk.from_region(region, x//16, z//16)
+    block = chunk.get_block(x%16, y, z%16)
+    return block.id
 
 def addframe(g,ems):
     global t
@@ -27,9 +27,9 @@ def addframe(g,ems):
     t+=1
 
 def bigfunc(x,y,c):
-  if c!=2:
+    if c!=2:
         return 0.5<=math.e**(-0.06*((x-x1)**2+(y-y1)**2))+math.e**(-0.06*((x-x2)**2+(y-y2)**2))+math.e**(-0.06*((x-x3)**2+(y-y3)**2))
-  else:
+    else:
         return 0.5<=math.e**(-0.06*((x-x1)**2+(y-y1)**2))+math.e**(-0.06*((x-x2)**2+(y-y2)**2))+math.e**(-0.06*((x-x3)**2+(y-y3)**2))+math.e**(y-24)
 
 def addframe(c):
@@ -50,27 +50,27 @@ def grow():
     while len(sorces)>0:
         growcords = []
         for sorce in sorces:
-          begx = sorce[0]
-          begy = sorce[1]
-          begz = sorce[2]
-          q = (begx + 1, begy, begz)
-          if q not in growcords:
-              growcords.append(q)
-          q = (begx-1,begy,begz)
-          if q not in growcords:
-              growcords.append(q)
-          q = (begx,begy+1,begz)
-          if q not in growcords:
-              growcords.append(q)
-          q = (begx,begy-1,begz)
-          if q not in growcords:
-              growcords.append(q)
-          q = (begx,begy,begz+1)
-          if q not in growcords:
-              growcords.append(q)
-          q = (begx,begy,begz-1)
-          if q not in growcords:
-              growcords.append(q)
+            begx = sorce[0]
+            begy = sorce[1]
+            begz = sorce[2]
+            q = (begx + 1, begy, begz)
+            if q not in growcords:
+                growcords.append(q)
+            q = (begx-1,begy,begz)
+            if q not in growcords:
+                growcords.append(q)
+            q = (begx,begy+1,begz)
+            if q not in growcords:
+                growcords.append(q)
+            q = (begx,begy-1,begz)
+            if q not in growcords:
+                growcords.append(q)
+            q = (begx,begy,begz+1)
+            if q not in growcords:
+                growcords.append(q)
+            q = (begx,begy,begz-1)
+            if q not in growcords:
+                growcords.append(q)
         print(t,'start',len(paths),len(builded))
         q=[x for x in growcords if x not in paths and x not in builded]
         print(t,'finish')
@@ -89,23 +89,23 @@ for t in range(20):
     addframe(c)
 for t in range(20*1,20//2*13):
     if t ==20*3:
-         c=1
+        c=1
     if t>=20*1 and t<20*2:
-         y1=5*(1-math.cos(math.pi*(t/20-1)))+16
+        y1=5*(1-math.cos(math.pi*(t/20-1)))+16
     if t>=20*1.5 and t<20*2.5:
-         x2=5*(1-math.cos(math.pi*(t/20-1.5)))+16
-         y2=-5*(1-math.cos(math.pi*(t/20-1.5)))+16
+        x2=5*(1-math.cos(math.pi*(t/20-1.5)))+16
+        y2=-5*(1-math.cos(math.pi*(t/20-1.5)))+16
     if t>=20*2 and t<20*3:
-         x3=-5*(1-math.cos(math.pi*(t/20-2)))+16
-         y3=-5*(1-math.cos(math.pi*(t/20-2)))+16
+        x3=-5*(1-math.cos(math.pi*(t/20-2)))+16
+        y3=-5*(1-math.cos(math.pi*(t/20-2)))+16
     if t>=20*3.5 and t<20*4.5:
-         x2 = -5 * (1 - math.cos(math.pi * (t / 20 - 3.5))) + 26
-         x3 = 5 * (1 - math.cos(math.pi * (t / 20 - 3.5))) + 6
+        x2 = -5 * (1 - math.cos(math.pi * (t / 20 - 3.5))) + 26
+        x3 = 5 * (1 - math.cos(math.pi * (t / 20 - 3.5))) + 6
     if t>=20*4.5 and t<20*5.5:
-         y2=5*(1-math.cos(math.pi*(t/20-4.5)))+6
-         y3=5*(1-math.cos(math.pi*(t/20-4.5)))+6
+        y2=5*(1-math.cos(math.pi*(t/20-4.5)))+6
+        y3=5*(1-math.cos(math.pi*(t/20-4.5)))+6
     if t>=20*5 and t<20*6:
-         y1=-5*(1-math.cos(math.pi*(t/20-5)))+26
+        y1=-5*(1-math.cos(math.pi*(t/20-5)))+26
     addframe(c)
 c=2
 boba=2

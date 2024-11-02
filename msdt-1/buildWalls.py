@@ -58,20 +58,6 @@ def linelen(line):
     return ( (line[0][0]-line[1][0])**2 + (line[0][1]-line[1][1])**2 ) ** 0.5
 
 
-def setlinelen(line, len, multiply):
-    if linelen(line) > 0:
-        if multiply:
-            return (line[0],
-                    (line[0][0] + (line[1][0]-line[0][0]) * len,
-                     line[0][1] + (line[1][1]-line[0][1]) * len))
-        else:
-            return (line[0],
-                   (line[0][0] + (line[1][0]-line[0][0]) * len / linelen(line),
-                    line[0][1] + (line[1][1]-line[0][1]) * len / linelen(line)))
-    else:
-        return line
-
-
 def dagtoline(line):
     global playerpos
     a = linelen((line[0], playerpos))
@@ -92,6 +78,20 @@ def dagtoline(line):
             return (line[0], playerpos)
         else:
             return (line[1], playerpos)
+
+
+def setlinelen(line, len, multiply):
+    if linelen(line) > 0:
+        if multiply:
+            return (line[0],
+                    (line[0][0] + (line[1][0]-line[0][0]) * len,
+                     line[0][1] + (line[1][1]-line[0][1]) * len))
+        else:
+            return (line[0],
+                   (line[0][0] + (line[1][0]-line[0][0]) * len / linelen(line),
+                    line[0][1] + (line[1][1]-line[0][1]) * len / linelen(line)))
+    else:
+        return line
 
 
 def collision():

@@ -16,16 +16,6 @@ def dotsgen():
                  y*side + (x%2==0)*side//2 ))
 
 
-def dotsdraw():
-    for dot in dots:
-        pygame.draw.circle(screen, (200, 0, 0), dot, 10)
-
-
-def linesdraw():
-    for line in lines:
-        pygame.draw.line(screen, (100, 100, 100), line[0], line[1], 5)
-
-
 def rast(d1, d2):
     return ( (d1[0]-d2[0])**2 + (d1[1]-d2[1])**2 )**0.5
 
@@ -62,6 +52,16 @@ def minlinerastdel(pos):
             minrast = linedotrast(pos, line)
     if minline:
         lines.remove(minline)
+
+    
+def linesdraw():
+    for line in lines:
+        pygame.draw.line(screen, (100, 100, 100), line[0], line[1], 5)
+
+
+def dotsdraw():
+    for dot in dots:
+        pygame.draw.circle(screen, (200, 0, 0), dot, 10)
 
 
 pygame.init()

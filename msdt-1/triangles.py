@@ -30,16 +30,6 @@ def rast(d1, d2):
     return ( (d1[0]-d2[0])**2 + (d1[1]-d2[1])**2 )**0.5
 
 
-def corrpos(pos, begpos):
-    mindot = dots[0]
-    minrast = rast(pos, dots[0])
-    for dot in dots:
-        if rast(pos, dot) < minrast:
-            mindot = dot
-            minrast = rast(pos, dot)
-    return mindot
-
-
 def corrpos(pos):
     mindot = dots[0]
     minrast = rast(pos, dots[0])

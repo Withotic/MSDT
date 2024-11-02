@@ -129,18 +129,3 @@ for t in range(20*6,20*6+20//2*5+1):
     y2=32-(td-1)**2
     y3=32-(td-2)**2
     addframe(c)
-
-
-#paths = []
-#sorces = []
-#for xc in range(4):
-#    for zc in range(4):
-#        chunk = anvil.Chunk.from_region(region, xc, zc)
-#        for x in range(16):
-#            for z in range(16):
-#                for y in range(2,64):
-#                    qqqq = chunk.get_block(x, y, z).id
-#                    if qqqq == 'glass':
-#                        paths.append((x+xc*16,y,z+zc*16))
-#                    elif qqqq == 'emerald_block':
-#                        sorces.append((x + xc * 16, y, z + zc * 16))

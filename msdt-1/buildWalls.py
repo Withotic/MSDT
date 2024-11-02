@@ -16,10 +16,14 @@ def eventshandle():
     keys = pg.key.get_pressed()
     dx = 0
     dy = 0
-    if keys[pg.K_UP]:dy -= 1
-    if keys[pg.K_DOWN]:dy += 1
-    if keys[pg.K_LEFT]:dx -= 1
-    if keys[pg.K_RIGHT]:dx += 1
+    if keys[pg.K_UP]:
+        dy -= 1
+    if keys[pg.K_DOWN]:
+        dy += 1
+    if keys[pg.K_LEFT]:
+        dx -= 1
+    if keys[pg.K_RIGHT]:
+        dx += 1
     if dx!=0 and dy!=0:
         playerpos = (playerpos[0] + playerspeed*dx/(2**0.5),
                      playerpos[1] + playerspeed*dy/(2**0.5))
@@ -27,22 +31,26 @@ def eventshandle():
         playerpos = (playerpos[0] + playerspeed*dx,
                      playerpos[1] + playerspeed*dy)
     for i in pg.event.get():
-        if i.type == pg.QUIT:exit()
+        if i.type == pg.QUIT:
+            exit()
         elif i.type == pg.KEYDOWN:
             if i.key == pg.K_e:
                 if not (bld):
                     bld = playerpos
                 elif bld:
                     lines.append((bld, playerpos))
-                    if not isdebug: playerpos = (playerpos[0] + playerrad,
-                                                 playerpos[1] + playerrad)
+                    if not isdebug:
+                        playerpos = (playerpos[0] + playerrad,
+                                     playerpos[1] + playerrad)
                     bld = None
             if i.key == pg.K_r:
                 bld = None
             if i.key == pg.K_k:
                 lines = []
-            if i.key == pg.K_c:isdebug = not isdebug
-            if i.key == pg.K_q:exit()
+            if i.key == pg.K_c:
+                isdebug = not isdebug
+            if i.key == pg.K_q:
+                exit()
 
 
 #---------------------------------------------------------COLLISION(almostdone)
@@ -69,7 +77,8 @@ def dagtoline(line):
     a = linelen((line[0], playerpos))
     b = linelen((line[1], playerpos))
     c = linelen(line)
-    if c==0: return (line[0], playerpos)
+    if c==0:
+        return (line[0], playerpos)
     h = abs( (a+b+c) * (a+b-c) * (a-b+c) * (-a+b+c) ) ** 0.5 / 2 / c
     am = (abs(a**2 - h**2)) ** 0.5
     bm = (abs(b**2 - h**2)) ** 0.5
@@ -88,10 +97,14 @@ def dagtoline(line):
 def collision():
     global playerpos, playerrad
     scr = pg.display.get_window_size()
-    if playerpos[0] - playerrad < 0: playerpos = (playerrad, playerpos[1])
-    if playerpos[1] - playerrad < 0: playerpos = (playerpos[0], playerrad)
-    if playerpos[0] + playerrad > scr[0]: playerpos = (scr[0] - playerrad, playerpos[1])
-    if playerpos[1] + playerrad > scr[1]: playerpos = (playerpos[0], scr[1] - playerrad)
+    if playerpos[0] - playerrad < 0:
+        playerpos = (playerrad, playerpos[1])
+    if playerpos[1] - playerrad < 0:
+        playerpos = (playerpos[0], playerrad)
+    if playerpos[0] + playerrad > scr[0]:
+        playerpos = (scr[0] - playerrad, playerpos[1])
+    if playerpos[1] + playerrad > scr[1]:
+        playerpos = (playerpos[0], scr[1] - playerrad)
 
     for line in lines:
         dagline = dagtoline(line)
@@ -123,8 +136,10 @@ def drawwall(line):
 
 
 def sign(n):
-    if n < 0:return -1
-    if n == 0:return 0
+    if n < 0:
+        return -1
+    if n == 0:
+        return 0
     return 1
 
 
@@ -155,7 +170,8 @@ def linecross(l1, l2):
     B = l2[1][0] - l2[0][0]
     C = l1[1][1] - l1[0][1]
     D = l2[1][1] - l2[0][1]
-    if (A*D - C*B) == 0: return None
+    if (A*D - C*B) == 0:
+        return None
     q = ( C*(l2[0][0]-l1[0][0]) - A*(l2[0][1]-l1[0][1]) ) / (A*D - C*B)
     d = (l2[0][0] + B*q, l2[0][1] + D*q)
     return (d, dotonline(d, l1), dotonline(d, l2))
@@ -257,7 +273,8 @@ pg.init()
 while True:
     screen.fill((0, 0, 0))
     eventshandle()
-    if not isdebug: collision()
+    if not isdebug:
+        collision()
     render()
     pg.draw.circle(screen, (255, 255, 255), playerpos, playerrad)
     pg.display.flip()

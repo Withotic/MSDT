@@ -2,7 +2,6 @@ import anvil
 import shutil
 import os
 import math
-import numpy
 
 t=0
 x1=16

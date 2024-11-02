@@ -25,8 +25,10 @@ def events_handling():
     if keys[pg.K_RIGHT]:
         player_move_x += 1
     if player_move_x!=0 and player_move_y!=0:
-        player_position = (player_position[0] + player_speed*player_move_x/(2**0.5),
-                           player_position[1] + player_speed*player_move_y/(2**0.5))
+        player_position = (player_position[0]
+                         + player_speed*player_move_x/(2**0.5),
+                           player_position[1]
+                         + player_speed*player_move_y/(2**0.5))
     else:
         player_position = (player_position[0] + player_speed*player_move_x,
                      player_position[1] + player_speed*player_move_y)
@@ -73,8 +75,11 @@ def distance_to_line(line):
                  player_position[1] + h * (line[0][0]-line[1][0]) / c),
                  player_position)
     else:
-        if line_length((line[0], player_position)) == min(line_length((line[0], player_position)),
-                                                line_length((line[1], player_position))):
+
+        if line_length((line[0], player_position)) ==\
+            min(line_length((line[0], player_position)),
+                line_length((line[1], player_position))):
+
             return (line[0], player_position)
         else:
             return (line[1], player_position)
@@ -88,8 +93,10 @@ def set_line_length(line, length, multiplier):
                      line[0][1] + (line[1][1]-line[0][1]) * length))
         else:
             return (line[0],
-                   (line[0][0] + (line[1][0]-line[0][0]) * length / line_length(line),
-                    line[0][1] + (line[1][1]-line[0][1]) * length / line_length(line)))
+                   (line[0][0]
+                    + (line[1][0]-line[0][0]) * length / line_length(line),
+                    line[0][1]
+                    + (line[1][1]-line[0][1]) * length / line_length(line)))
     else:
         return line
 
@@ -109,7 +116,8 @@ def collision():
     for line in lines:
         distance_to_line = distance_to_line(line)
         if(line_length(distance_to_line) < player_radius):
-            player_position = set_line_length(distance_to_line, player_radius, False)[1]
+            player_position = set_line_length(distance_to_line,
+                                              player_radius, False)[1]
 
 
 #-------------------------------------------------------------RENDER(linesplit)
@@ -154,11 +162,13 @@ def is_dot_on_line(d, l):
     if l[0][0] == l[1][0]:
         return (  (l[0][1]<=d[1] and d[1]<=l[1][1])
                or (l[0][1]>=d[1] and d[1]>=l[1][1]))\
-               and (line_length((l[0], d))+line_length((l[1], d)) < line_length(l)*1.001)
+               and (line_length((l[0], d))+line_length((l[1], d))
+                    < line_length(l)*1.001)
     if l[0][1] == l[1][1]:
         return ((l[0][0]<=d[0] and d[0]<=l[1][0])
              or (l[0][0]>=d[0] and d[0]>=l[1][0]))\
-             and (line_length((l[0], d))+line_length((l[1], d)) < line_length(l)*1.001)
+             and (line_length((l[0], d))+line_length((l[1], d))
+                  < line_length(l)*1.001)
     return (    (l[0][0]<=d[0] and d[0]<=l[1][0])
              or (l[0][0]>=d[0] and d[0]>=l[1][0]))\
            and ((l[0][1]<=d[1] and d[1]<=l[1][1])
@@ -179,8 +189,10 @@ def dot_of_crossing_lines(l1, l2):
 
 def is_line_fullblocked_by_another_line(blocked_line, blocking_line):
     global player_position
-    n1 = dot_of_crossing_lines((player_position, blocked_line[0]), blocking_line)
-    n2 = dot_of_crossing_lines((player_position, blocked_line[1]), blocking_line)
+    n1 = dot_of_crossing_lines((player_position, blocked_line[0]),
+                               blocking_line)
+    n2 = dot_of_crossing_lines((player_position, blocked_line[1]),
+                               blocking_line)
     n3 = dot_of_crossing_lines(blocked_line, blocking_line)
     return n1 and n2 and n1[1] and n1[2] and n2[1] and n2[2]
 
@@ -198,28 +210,46 @@ def is_line_doublesplited_by_another_line(l, d1, d2):
 
 def is_line_partblocked_by_another_line(blocked_line, blocking_line):
     global player_position
-    if (    is_dot_in_triangle(player_position, blocked_line[0], blocked_line[1], blocking_line[0])
-        and is_dot_in_triangle(player_position, blocked_line[0], blocked_line[1], blocking_line[1])):
+    if (    is_dot_in_triangle(player_position, blocked_line[0],
+                               blocked_line[1], blocking_line[0])
+        and is_dot_in_triangle(player_position, blocked_line[0],
+                               blocked_line[1], blocking_line[1])):
         print('hi')
         return is_line_doublesplited_by_another_line(blocked_line,
-               dot_of_crossing_lines(blocked_line, (player_position, blocking_line[0]))[0],
-               dot_of_crossing_lines(blocked_line, (player_position, blocking_line[1]))[0])
-    if (    dot_of_crossing_lines((player_position, blocked_line[0]), blocking_line)
-        and dot_of_crossing_lines((player_position, blocked_line[0]), blocking_line)[1]
-        and dot_of_crossing_lines((player_position, blocked_line[0]), blocking_line)[2]):
+               dot_of_crossing_lines(blocked_line,
+                                     (player_position, blocking_line[0]))[0],
+               dot_of_crossing_lines(blocked_line,
+                                     (player_position, blocking_line[1]))[0])
+    if (    dot_of_crossing_lines((player_position, blocked_line[0]),
+                                  blocking_line)
+        and dot_of_crossing_lines((player_position, blocked_line[0]),
+                                  blocking_line)[1]
+        and dot_of_crossing_lines((player_position, blocked_line[0]),
+                                  blocking_line)[2]):
         print('hi1')
-        if is_dot_in_triangle(player_position, blocked_line[0], blocked_line[1], blocking_line[0]):
-            return [(dot_of_crossing_lines((player_position, blocking_line[0]), blocked_line)[0], blocked_line[1])]
+        if is_dot_in_triangle(player_position,
+                              blocked_line[0],
+                              blocked_line[1],
+                              blocking_line[0]):
+            return [(dot_of_crossing_lines((player_position, blocking_line[0]),
+                                           blocked_line)[0], blocked_line[1])]
         else:
-            return [(dot_of_crossing_lines((player_position, blocking_line[1]), blocked_line)[0], blocked_line[1])]
-    if (    dot_of_crossing_lines((player_position, blocked_line[1]), blocking_line)
-        and dot_of_crossing_lines((player_position, blocked_line[1]), blocking_line)[1]
-        and dot_of_crossing_lines((player_position, blocked_line[1]), blocking_line)[2]):
+            return [(dot_of_crossing_lines((player_position, blocking_line[1]),
+                                          blocked_line)[0], blocked_line[1])]
+    if (    dot_of_crossing_lines((player_position, blocked_line[1]),
+                                  blocking_line)
+        and dot_of_crossing_lines((player_position, blocked_line[1]),
+                                  blocking_line)[1]
+        and dot_of_crossing_lines((player_position, blocked_line[1]),
+                                  blocking_line)[2]):
         print('hi2')
-        if is_dot_in_triangle(player_position, blocked_line[0], blocked_line[1], blocking_line[0]):
-            return [(dot_of_crossing_lines((player_position, blocking_line[0]), blocked_line)[0], blocked_line[0])]
+        if is_dot_in_triangle(player_position, blocked_line[0],
+                              blocked_line[1], blocking_line[0]):
+            return [(dot_of_crossing_lines((player_position, blocking_line[0]),
+                                          blocked_line)[0], blocked_line[0])]
         else:
-            return [(dot_of_crossing_lines((player_position, blocking_line[1]), blocked_line)[0], blocked_line[0])]
+            return [(dot_of_crossing_lines((player_position, blocking_line[1]),
+                                          blocked_line)[0], blocked_line[0])]
     return None
 
 
@@ -243,12 +273,14 @@ def splitted_lines():#должен вернуть массив из разрез
         blocking_lines = blocked_lines.copy()
         blocking_lines.remove(blocked_lines[i])
         while len(blocking_lines) > 0:
-            if is_line_fullblocked_by_another_line(blocked_lines[i], blocking_lines[0]):
+            if is_line_fullblocked_by_another_line(blocked_lines[i],
+                                                   blocking_lines[0]):
                 blocked_lines.pop(i)
                 i -= 1
                 blocking_lines.pop(0)
                 break
-            pb = is_line_partblocked_by_another_line(blocked_lines[i], blocking_lines[0])
+            pb = is_line_partblocked_by_another_line(blocked_lines[i],
+                                                     blocking_lines[0])
             if pb:
                 blocked_lines.pop(i)
                 blocked_lines += pb

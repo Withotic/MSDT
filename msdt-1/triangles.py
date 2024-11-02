@@ -47,7 +47,8 @@ def delete_nearest_line(pos):
     minimal_distance = 999999
     minimal_distance_line = None
     for line in lines:
-        if not(minimal_distance_line) or minimal_distance>distance_between_dot_n_line(pos, line):
+        if not(minimal_distance_line)\
+          or minimal_distance>distance_between_dot_n_line(pos, line):
             minimal_distance_line = line
             minimal_distance = distance_between_dot_n_line(pos, line)
     if minimal_distance_line:
@@ -88,7 +89,8 @@ while True:
             mouse_position = correct_mouse_pos_to_grid(event.pos)
         if event.type==pygame.MOUSEBUTTONUP and event.button==1:
             is_mouse_drag = False
-            if dot_1!=correct_mouse_pos_to_grid(mouse_position) and (dot_1, mouse_position) not in lines:
+            if dot_1!=correct_mouse_pos_to_grid(mouse_position)\
+              and (dot_1, mouse_position) not in lines:
                 lines.append((dot_1, mouse_position))
     if is_mouse_drag:
         pygame.draw.line(screen, (100, 100, 100), dot_1, mouse_position, 5)

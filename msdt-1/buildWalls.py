@@ -2,121 +2,121 @@ import pygame as pg
 
 
 screen = pg.display.set_mode((800, 800))
-playerpos = (30, 30)
-playerrad = 20
-playerspeed = 10
+player_position = (30, 30)
+player_radius = 20
+player_speed = 10
 lines = []
-bld = None  #buildlinedot
-isdebug = False
+building_line_dot = None  #buildlinedot
+is_debug = False
 
 
-#------------------------------------------------------------EVENTSHANDLE(done)
-def eventshandle():
-    global playerpos, bld, lines, isdebug
+#---------------------------------------------------------EVENTS HANDLING(done)
+def events_handling():
+    global player_position, building_line_dot, lines, is_debug
     keys = pg.key.get_pressed()
-    dx = 0
-    dy = 0
+    player_move_x = 0
+    player_move_y = 0
     if keys[pg.K_UP]:
-        dy -= 1
+        player_move_y -= 1
     if keys[pg.K_DOWN]:
-        dy += 1
+        player_move_y += 1
     if keys[pg.K_LEFT]:
-        dx -= 1
+        player_move_x -= 1
     if keys[pg.K_RIGHT]:
-        dx += 1
-    if dx!=0 and dy!=0:
-        playerpos = (playerpos[0] + playerspeed*dx/(2**0.5),
-                     playerpos[1] + playerspeed*dy/(2**0.5))
+        player_move_x += 1
+    if player_move_x!=0 and player_move_y!=0:
+        player_position = (player_position[0] + player_speed*player_move_x/(2**0.5),
+                           player_position[1] + player_speed*player_move_y/(2**0.5))
     else:
-        playerpos = (playerpos[0] + playerspeed*dx,
-                     playerpos[1] + playerspeed*dy)
-    for i in pg.event.get():
-        if i.type == pg.QUIT:
+        player_position = (player_position[0] + player_speed*player_move_x,
+                     player_position[1] + player_speed*player_move_y)
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
             exit()
-        elif i.type == pg.KEYDOWN:
-            if i.key == pg.K_e:
-                if not (bld):
-                    bld = playerpos
-                elif bld:
-                    lines.append((bld, playerpos))
-                    if not isdebug:
-                        playerpos = (playerpos[0] + playerrad,
-                                     playerpos[1] + playerrad)
-                    bld = None
-            if i.key == pg.K_r:
-                bld = None
-            if i.key == pg.K_k:
+        elif event.type == pg.KEYDOWN:
+            if event.key == pg.K_e:
+                if not (building_line_dot):
+                    building_line_dot = player_position
+                elif building_line_dot:
+                    lines.append((building_line_dot, player_position))
+                    if not is_debug:
+                        player_position = (player_position[0] + player_radius,
+                                     player_position[1] + player_radius)
+                    building_line_dot = None
+            if event.key == pg.K_r:
+                building_line_dot = None
+            if event.key == pg.K_k:
                 lines = []
-            if i.key == pg.K_c:
-                isdebug = not isdebug
-            if i.key == pg.K_q:
+            if event.key == pg.K_c:
+                is_debug = not is_debug
+            if event.key == pg.K_q:
                 exit()
 
 
 #---------------------------------------------------------COLLISION(almostdone)
-def linelen(line):
+def line_length(line):
     return ( (line[0][0]-line[1][0])**2 + (line[0][1]-line[1][1])**2 ) ** 0.5
 
 
-def dagtoline(line):
-    global playerpos
-    a = linelen((line[0], playerpos))
-    b = linelen((line[1], playerpos))
-    c = linelen(line)
+def distance_to_line(line):
+    global player_position
+    a = line_length((line[0], player_position))
+    b = line_length((line[1], player_position))
+    c = line_length(line)
     if c==0:
-        return (line[0], playerpos)
+        return (line[0], player_position)
     h = abs( (a+b+c) * (a+b-c) * (a-b+c) * (-a+b+c) ) ** 0.5 / 2 / c
     am = (abs(a**2 - h**2)) ** 0.5
     bm = (abs(b**2 - h**2)) ** 0.5
     if am<=c and bm<=c:
-        return ((playerpos[0] + h * (line[1][1]-line[0][1]) / c,
-                 playerpos[1] + h * (line[0][0]-line[1][0]) / c),
-                 playerpos)
+        return ((player_position[0] + h * (line[1][1]-line[0][1]) / c,
+                 player_position[1] + h * (line[0][0]-line[1][0]) / c),
+                 player_position)
     else:
-        if linelen((line[0], playerpos)) == min(linelen((line[0], playerpos)),
-                                                linelen((line[1], playerpos))):
-            return (line[0], playerpos)
+        if line_length((line[0], player_position)) == min(line_length((line[0], player_position)),
+                                                line_length((line[1], player_position))):
+            return (line[0], player_position)
         else:
-            return (line[1], playerpos)
+            return (line[1], player_position)
 
 
-def setlinelen(line, len, multiply):
-    if linelen(line) > 0:
-        if multiply:
+def set_line_length(line, length, multiplier):
+    if line_length(line) > 0:
+        if multiplier:
             return (line[0],
-                    (line[0][0] + (line[1][0]-line[0][0]) * len,
-                     line[0][1] + (line[1][1]-line[0][1]) * len))
+                    (line[0][0] + (line[1][0]-line[0][0]) * length,
+                     line[0][1] + (line[1][1]-line[0][1]) * length))
         else:
             return (line[0],
-                   (line[0][0] + (line[1][0]-line[0][0]) * len / linelen(line),
-                    line[0][1] + (line[1][1]-line[0][1]) * len / linelen(line)))
+                   (line[0][0] + (line[1][0]-line[0][0]) * length / line_length(line),
+                    line[0][1] + (line[1][1]-line[0][1]) * length / line_length(line)))
     else:
         return line
 
 
 def collision():
-    global playerpos, playerrad
-    scr = pg.display.get_window_size()
-    if playerpos[0] - playerrad < 0:
-        playerpos = (playerrad, playerpos[1])
-    if playerpos[1] - playerrad < 0:
-        playerpos = (playerpos[0], playerrad)
-    if playerpos[0] + playerrad > scr[0]:
-        playerpos = (scr[0] - playerrad, playerpos[1])
-    if playerpos[1] + playerrad > scr[1]:
-        playerpos = (playerpos[0], scr[1] - playerrad)
+    global player_position, player_radius
+    screen_sizes = pg.display.get_window_size()
+    if player_position[0] - player_radius < 0:
+        player_position = (player_radius, player_position[1])
+    if player_position[1] - player_radius < 0:
+        player_position = (player_position[0], player_radius)
+    if player_position[0] + player_radius > screen_sizes[0]:
+        player_position = (screen_sizes[0] - player_radius, player_position[1])
+    if player_position[1] + player_radius > screen_sizes[1]:
+        player_position = (player_position[0], screen_sizes[1] - player_radius)
 
     for line in lines:
-        dagline = dagtoline(line)
-        if(linelen(dagline) < playerrad):
-            playerpos = setlinelen(dagline, playerrad, False)[1]
+        distance_to_line = distance_to_line(line)
+        if(line_length(distance_to_line) < player_radius):
+            player_position = set_line_length(distance_to_line, player_radius, False)[1]
+
+
 #-------------------------------------------------------------RENDER(linesplit)
-
-
-def drawwall(line):
+def draw_wall(line):
     pg.draw.line(screen, (255, 255, 255), line[0], line[1])
     pg.draw.line(screen, (255, 0, 0), line[0],
-                 setlinelen((
+                 set_line_length((
                                 line[0],
                                 (
                                     line[0][0] + (line[1][1]-line[0][1]),
@@ -125,7 +125,7 @@ def drawwall(line):
                             ),
                             10, False)[1])
     pg.draw.line(screen, (255, 0, 0), line[1],
-                 setlinelen((
+                 set_line_length((
                                 line[1],
                                 (
                                     line[1][0] + (line[1][1]-line[0][1]),
@@ -143,29 +143,29 @@ def sign(n):
     return 1
 
 
-def dotintriag(a, b, c, D):
+def is_dot_in_triangle(a, b, c, D):
     z1 = sign((a[0]-D[0]) * (b[1]-a[1]) - (b[0]-a[0]) * (a[1]-D[1]))
     z2 = sign((b[0]-D[0]) * (c[1]-b[1]) - (c[0]-b[0]) * (b[1]-D[1]))
     z3 = sign((c[0]-D[0]) * (a[1]-c[1]) - (a[0]-c[0]) * (c[1]-D[1]))
     return z1==z2 and z2==z3 and z1!=0
 
 
-def dotonline(d, l):
+def is_dot_on_line(d, l):
     if l[0][0] == l[1][0]:
         return (  (l[0][1]<=d[1] and d[1]<=l[1][1])
                or (l[0][1]>=d[1] and d[1]>=l[1][1]))\
-               and (linelen((l[0], d))+linelen((l[1], d)) < linelen(l)*1.001)
+               and (line_length((l[0], d))+line_length((l[1], d)) < line_length(l)*1.001)
     if l[0][1] == l[1][1]:
         return ((l[0][0]<=d[0] and d[0]<=l[1][0])
              or (l[0][0]>=d[0] and d[0]>=l[1][0]))\
-             and (linelen((l[0], d))+linelen((l[1], d)) < linelen(l)*1.001)
+             and (line_length((l[0], d))+line_length((l[1], d)) < line_length(l)*1.001)
     return (    (l[0][0]<=d[0] and d[0]<=l[1][0])
              or (l[0][0]>=d[0] and d[0]>=l[1][0]))\
            and ((l[0][1]<=d[1] and d[1]<=l[1][1])
              or (l[0][1]>=d[1] and d[1]>=l[1][1]))
 
 
-def linecross(l1, l2):
+def dot_of_crossing_lines(l1, l2):
     A = l1[1][0] - l1[0][0]
     B = l2[1][0] - l2[0][0]
     C = l1[1][1] - l1[0][1]
@@ -174,20 +174,20 @@ def linecross(l1, l2):
         return None
     q = ( C*(l2[0][0]-l1[0][0]) - A*(l2[0][1]-l1[0][1]) ) / (A*D - C*B)
     d = (l2[0][0] + B*q, l2[0][1] + D*q)
-    return (d, dotonline(d, l1), dotonline(d, l2))
+    return (d, is_dot_on_line(d, l1), is_dot_on_line(d, l2))
 
 
-def fullblock(dl, bl):
-    global playerpos
-    n1 = linecross((playerpos, dl[0]), bl)
-    n2 = linecross((playerpos, dl[1]), bl)
-    n3 = linecross(dl, bl)
+def is_line_fullblocked_by_another_line(blocked_line, blocking_line):
+    global player_position
+    n1 = dot_of_crossing_lines((player_position, blocked_line[0]), blocking_line)
+    n2 = dot_of_crossing_lines((player_position, blocked_line[1]), blocking_line)
+    n3 = dot_of_crossing_lines(blocked_line, blocking_line)
     return n1 and n2 and n1[1] and n1[2] and n2[1] and n2[2]
 
 
-def doubsplit(l, d1, d2):
-    a = linelen((l[0], d1))
-    b = linelen((l[0], d2))
+def is_line_doublesplited_by_another_line(l, d1, d2):
+    a = line_length((l[0], d1))
+    b = line_length((l[0], d2))
     if a == b:
         return [l]
     if a < b:
@@ -196,74 +196,75 @@ def doubsplit(l, d1, d2):
         return [(l[0], d2), (d1, l[1])]
 
 
-def partblock(dl, bl):
-    global playerpos
-    if (    dotintriag(playerpos, dl[0], dl[1], bl[0])
-        and dotintriag(playerpos, dl[0], dl[1], bl[1])):
+def is_line_partblocked_by_another_line(blocked_line, blocking_line):
+    global player_position
+    if (    is_dot_in_triangle(player_position, blocked_line[0], blocked_line[1], blocking_line[0])
+        and is_dot_in_triangle(player_position, blocked_line[0], blocked_line[1], blocking_line[1])):
         print('hi')
-        return doubsplit(dl, linecross(dl, (playerpos, bl[0]))[0],
-                             linecross(dl, (playerpos, bl[1]))[0])
-    if (    linecross((playerpos, dl[0]), bl)
-        and linecross((playerpos, dl[0]), bl)[1]
-        and linecross((playerpos, dl[0]), bl)[2]):
+        return is_line_doublesplited_by_another_line(blocked_line,
+               dot_of_crossing_lines(blocked_line, (player_position, blocking_line[0]))[0],
+               dot_of_crossing_lines(blocked_line, (player_position, blocking_line[1]))[0])
+    if (    dot_of_crossing_lines((player_position, blocked_line[0]), blocking_line)
+        and dot_of_crossing_lines((player_position, blocked_line[0]), blocking_line)[1]
+        and dot_of_crossing_lines((player_position, blocked_line[0]), blocking_line)[2]):
         print('hi1')
-        if dotintriag(playerpos, dl[0], dl[1], bl[0]):
-            return [(linecross((playerpos, bl[0]), dl)[0], dl[1])]
+        if is_dot_in_triangle(player_position, blocked_line[0], blocked_line[1], blocking_line[0]):
+            return [(dot_of_crossing_lines((player_position, blocking_line[0]), blocked_line)[0], blocked_line[1])]
         else:
-            return [(linecross((playerpos, bl[1]), dl)[0], dl[1])]
-    if (    linecross((playerpos, dl[1]), bl)
-        and linecross((playerpos, dl[1]), bl)[1]
-        and linecross((playerpos, dl[1]), bl)[2]):
+            return [(dot_of_crossing_lines((player_position, blocking_line[1]), blocked_line)[0], blocked_line[1])]
+    if (    dot_of_crossing_lines((player_position, blocked_line[1]), blocking_line)
+        and dot_of_crossing_lines((player_position, blocked_line[1]), blocking_line)[1]
+        and dot_of_crossing_lines((player_position, blocked_line[1]), blocking_line)[2]):
         print('hi2')
-        if dotintriag(playerpos, dl[0], dl[1], bl[0]):
-            return [(linecross((playerpos, bl[0]), dl)[0], dl[0])]
+        if is_dot_in_triangle(player_position, blocked_line[0], blocked_line[1], blocking_line[0]):
+            return [(dot_of_crossing_lines((player_position, blocking_line[0]), blocked_line)[0], blocked_line[0])]
         else:
-            return [(linecross((playerpos, bl[1]), dl)[0], dl[0])]
+            return [(dot_of_crossing_lines((player_position, blocking_line[1]), blocked_line)[0], blocked_line[0])]
     return None
 
 
-def fullvis(dl, bl):
-    global playerpos
-    n1 = linecross((playerpos, dl[0]), bl)
-    n2 = linecross((playerpos, dl[1]), bl)
-    n3 = linecross(dl, bl)
+def is_line_notblocked(dl, bl):
+    global player_position
+    n1 = dot_of_crossing_lines((player_position, dl[0]), bl)
+    n2 = dot_of_crossing_lines((player_position, dl[1]), bl)
+    n3 = dot_of_crossing_lines(dl, bl)
     return    (not(n3) or (not(n3[1]) and not(n3[2])))\
           and (not(n2) or (not(n2[1]) and not(n2[2])))\
           and (not(n1) or (not(n1[1]) and not(n1[2])))\
-          and not(dotintriag(playerpos, dl[0], dl[1], bl[0]))\
-          and not(dotintriag(playerpos, dl[0], dl[1], bl[1]))
+          and not(is_dot_in_triangle(player_position, dl[0], dl[1], bl[0]))\
+          and not(is_dot_in_triangle(player_position, dl[0], dl[1], bl[1]))
 
 
-def splitisline():#должен вернуть массив из разрезанной стены
-    global playerpos,lines
-    dls = lines.copy()
+def splitted_lines():#должен вернуть массив из разрезанной стены
+    global player_position,lines
+    blocked_lines = lines.copy()
     i = 0
-    while i < len(dls):
-        bls = dls.copy()
-        bls.remove(dls[i])
-        while len(bls) > 0:
-            if fullblock(dls[i], bls[0]):
-                dls.pop(i)
+    while i < len(blocked_lines):
+        blocking_lines = blocked_lines.copy()
+        blocking_lines.remove(blocked_lines[i])
+        while len(blocking_lines) > 0:
+            if is_line_fullblocked_by_another_line(blocked_lines[i], blocking_lines[0]):
+                blocked_lines.pop(i)
                 i -= 1
-                bls.pop(0)
+                blocking_lines.pop(0)
                 break
-            pb = partblock(dls[i], bls[0])
+            pb = is_line_partblocked_by_another_line(blocked_lines[i], blocking_lines[0])
             if pb:
-                dls.pop(i)
-                dls += pb
-            bls.pop(0)
+                blocked_lines.pop(i)
+                blocked_lines += pb
+            blocking_lines.pop(0)
         i += 1
-    return dls
+    return blocked_lines
 
 
 def render():
-    if bld:
-        drawwall((bld, playerpos))
-    if isdebug:
+    if building_line_dot:
+        draw_wall((building_line_dot, player_position))
+    if is_debug:
         for line in lines:
-            drawwall(line)
+            draw_wall(line)
     else:
-        for line in splitisline():
+        for line in splitted_lines():
             pg.draw.line(screen, (255, 255, 255), line[0], line[1])
 
 
@@ -272,11 +273,11 @@ clock = pg.time.Clock()
 pg.init()
 while True:
     screen.fill((0, 0, 0))
-    eventshandle()
-    if not isdebug:
+    events_handling()
+    if not is_debug:
         collision()
     render()
-    pg.draw.circle(screen, (255, 255, 255), playerpos, playerrad)
+    pg.draw.circle(screen, (255, 255, 255), player_position, player_radius)
     pg.display.flip()
     clock.tick(60)
     pg.display.set_caption(f'FPS: {clock.get_fps() :.2f}')

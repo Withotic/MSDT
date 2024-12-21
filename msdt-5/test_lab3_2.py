@@ -24,7 +24,7 @@ def deshifr(trt):
 def test_q():
     assert shifr("gkass")=="g1k1a1s2"
 
-ss = input()
-q = shifr(ss)
-print(q)
-print(deshifr(q))
+#ss = input()
+#q = shifr(ss)
+#print(q)
+#print(deshifr(q))

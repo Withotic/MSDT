@@ -8,7 +8,6 @@ def krugskobs(s):
             k += 1
         elif q == ')':
             k -= 1
-    assert k==0
     return k==0
 
 #проверяет ([{}]) скобки + случаи [{]}

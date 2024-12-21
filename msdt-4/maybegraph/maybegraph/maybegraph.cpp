@@ -5,6 +5,8 @@
 #include <iostream>
 #include <algorithm>
 #include <windows.h>
+#include <time.h>
+#include <string>
 
 // Константа для преобразования градусов в радианы
 constexpr float PI = 3.14159265359f;
@@ -34,6 +36,7 @@ struct polygon {
 
 // Функция для отрисовки полигона
 void drawPolygon(float vertices[4 * 3], float v) {
+
     glColor3f(v, v, v);  // Установка цвета
     glBegin(GL_POLYGON); // Начало отрисовки полигона
 
@@ -103,15 +106,20 @@ float sind(double q) {
 
 float sun_rot[3] = { cosd(45) * cosd(-45),sind(-45),-sind(45) * cosd(-45) };
 
+int debugtime=0;
 
+std::string rettime() {
+    int q = time(NULL) - debugtime;
+    return std::to_string(q/3600)+std::string(":")+ std::to_string(q/60%60)+ std::string(":") + std::to_string(q%60);
+}
 int main() {
-
+    debugtime = time(NULL);
     // Инициализация GLFW
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
         return -1;
     }
-
+    std::cout << rettime()<<" in main(): GLFW initialized successfully"<<std::endl;
     GLFWwindow* window = glfwCreateWindow(800, 800, "Rotating Polygon", nullptr, nullptr);
     // Настройка окна
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -124,6 +132,7 @@ int main() {
         glfwTerminate();
         return -1;
     }
+    std::cout << rettime() << " in main(): GLFW window created successfully"<<std::endl;
     glfwMakeContextCurrent(window);
 
     // Загрузка функций OpenGL с помощью GLAD
@@ -131,7 +140,7 @@ int main() {
         std::cerr << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-
+    std::cout << rettime() << " in main(): GLAD initialized successfully" << std::endl;
     // Установка коллбэка изменения размера окна
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -140,7 +149,7 @@ int main() {
     const int polig_size = slices * levels * 2 + slices;
     const float r = 0.5;
     polygon polygons[polig_size];
-
+    
     //создание киндера
     for (int i = 0;i < slices;i++)
         for (int j = 0;j < levels;j++) {
@@ -245,16 +254,24 @@ int main() {
                 }
         };
     }
+
+    std::cout << rettime() << " in main(): figure built successfully" << std::endl;
     float sunr = 0;
     float scale = 1;
     float shift = 0;
+
+    bool nottrashing = false;
+    bool frame90noticed = false;
     // Основной цикл
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
-
+        if ((int)sunr % 90==0 && !nottrashing && !frame90noticed)
+            nottrashing = true;
         // Очистка экрана
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        if(nottrashing)
+            std::cout << rettime() << " in main(): now sun rotated on 90d: GL buffer cleared" << std::endl;
 
         polygon transformed_polygons[polig_size];
 
@@ -428,11 +445,14 @@ int main() {
 
             };
         }
-
+        if (nottrashing)
+            std::cout << rettime() << " in main(): now sun rotated on 90d: figure transform completed" << std::endl;
         std::sort(std::begin(transformed_polygons), std::end(transformed_polygons),
             [](const polygon& a, const polygon& b) {
                 return (a.vrts[2] + a.vrts[5] + a.vrts[8] + a.vrts[11]) / 4 > (b.vrts[2] + b.vrts[5] + b.vrts[8] + b.vrts[11]) / 4; // Сравнение на основе z-координаты
             });
+        if (nottrashing)
+            std::cout << rettime() << " in main(): now sun rotated on 90d: polygons sorted to z coordinate to camera" << std::endl;
         for (int i = 0;i < polig_size;i++) {
             float xp = transformed_polygons[i].norm[0];
             float yp = transformed_polygons[i].norm[1];
@@ -455,12 +475,17 @@ int main() {
             if(transformed_polygons[i].norm[2]<=0)
             drawPolygon(transformed_polygons[i].vrts, 0.5 - v / 2);
         }
+        if (nottrashing)
+            std::cout << rettime() << " in main(): now sun rotated on 90d: polygons drawing completed" << std::endl;
         sun_rot[0] = cosd(sunr) * cosd(-45);
         sun_rot[1] = sind(-45);
         sun_rot[2] = -sind(sunr) * cosd(-45);
         sunr += 0.1;
         scale = sind(sunr*4)/4+0.75;
         shift = sind(sunr);
+
+        if (nottrashing)
+            std::cout << rettime() << " in main(): now sun rotated on 90d: all variables updated to next frame" << std::endl;
         /*drawLines({
      cos(a*DEG_TO_RAD),  sin(a * DEG_TO_RAD),
      cos((a+90) * DEG_TO_RAD), sin((a+90) * DEG_TO_RAD),
@@ -477,6 +502,19 @@ int main() {
         // Смена буферов
         glfwSwapBuffers(window);
         glfwPollEvents();
+        if (nottrashing)
+            std::cout << rettime() << " in main(): now sun rotated on 90d: frame updated; frame cycle is done." << std::endl<<std::endl;
+
+        if ((int)sunr % 90 == 45)
+            frame90noticed = false;
+        if (nottrashing) {
+            nottrashing = false;
+            frame90noticed = true;
+        }
+
+        
+        
+            
     }
 
     glfwTerminate();

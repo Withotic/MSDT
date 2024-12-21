@@ -29,17 +29,23 @@ def skobs(s):
         elif q == ']':
             if not(m) or m.pop() != 2:
                 return False
-    return True
+    return len(m)==0
 
-def test_krugskobs():
+def test_krugskobs_true():
     assert krugskobs("gkja (asd) fas(df)asdf(ff(dd+fd)sdf)")==True
+    assert krugskobs("( (q) (b) (t) )    (=(-)(=-)2)")==True
+
+def test_krugskobs_false():
     assert krugskobs(":))))))))")==False
     assert krugskobs("(()()))")==False
+    assert krugskobs("SD()B<S()<>(BSD)))0dlsf0ls()())))")==False
 
-def test_skobs():
+def test_skobs_true():
     assert skobs("[{aja+(qq)}-mojojoq](dd)")==True
+    assert skobs("[++(-- )234{52}]  {[]{}({})} sdf ([]{})")==True
+
+def test_skobs_false():
     assert skobs("{}()[")==False
     assert skobs("{})[](")==False
     assert skobs("}jkl()")==False
     assert skobs("[{]}")==False
-

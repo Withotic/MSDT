@@ -1,5 +1,4 @@
 import pytest
-#3_3
 @pytest.mark.parametrize("ss", ["gkassb oneqqgo.//3365"])
 def test_shifr(ss):
     trt=""
@@ -21,8 +20,3 @@ def deshifr(trt):
     for i in range(len(trt)//2):
         res+=trt[i*2]*int(trt[i*2+1])
     assert res=="gkassb  oneqqgo.//3365"
-
-#ss = input()
-#q = shifr(ss)
-#print(q)
-#print(deshifr(q))

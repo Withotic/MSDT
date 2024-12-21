@@ -1,4 +1,6 @@
 import pytest
+
+#проверяет правильно ли расставленны круглые скобки
 def krugskobs(s):
     k = 0
     for q in s:
@@ -7,9 +9,9 @@ def krugskobs(s):
         elif q == ')':
             k -= 1
     assert k==0
-    if k==0: return 'скобки расставленны правильно'
-    else: return 'скобки расставленны НЕПРАВИЛЬНО'
+    return k==0
 
+#проверяет ([{}]) скобки + случаи [{]}
 def skobs(s):
     m=[]
     for q in s:
@@ -21,18 +23,24 @@ def skobs(s):
             m.append(2)
         elif q==')':
             if not(m) or m.pop()!=0:
-                return 'скобки расставленны НЕПРАВИЛЬНО'
+                return False
         elif q == '}':
             if not(m) or m.pop() != 1:
-                return 'скобки расставленны НЕПРАВИЛЬНО'
+                return False
         elif q == ']':
             if not(m) or m.pop() != 2:
-                return 'скобки расставленны НЕПРАВИЛЬНО'
-    return 'скобки расставленны правильно'
-s=input()
-while s!='':
-    print(krugskobs(list(s)))
-    s=input()
-while s!='':
-    print(skobs(list(s)))
-    s=input()
+                return False
+    return True
+
+def test_krugskobs():
+    assert krugskobs("gkja (asd) fas(df)asdf(ff(dd+fd)sdf)")==True
+    assert krugskobs(":))))))))")==False
+    assert krugskobs("(()()))")==False
+
+def test_skobs():
+    assert skobs("[{aja+(qq)}-mojojoq](dd)")==True
+    assert skobs("{}()[")==False
+    assert skobs("{})[](")==False
+    assert skobs("}jkl()")==False
+    assert skobs("[{]}")==False
+
